@@ -27,7 +27,7 @@ app.use(compression());
 app.use(cors())
 app.use(helmet());
 
-const LIMIT = '500kb';
+const LIMIT = '1000kb'; //500//
 app.use(bodyParser.json({ limit: LIMIT, extended: true }));
 app.use(bodyParser.urlencoded({ limit: LIMIT, extended: true }));
 app.use(express.json({ limit: LIMIT }));
