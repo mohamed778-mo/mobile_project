@@ -41,8 +41,8 @@ const Login = async (req, res) => {
     res.cookie("access_token", `Bearer ${token}`, {
   expires: new Date(Date.now() + 60 * 60 * 24 * 1024 * 300),
   httpOnly: true,
-  secure: true,
-  sameSite: "None",
+  secure: false,
+  sameSite: "lax",
   path: "/"
 });
 
