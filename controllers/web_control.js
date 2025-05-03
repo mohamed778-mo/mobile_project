@@ -742,7 +742,7 @@ const resetPassword =  async (req, res) => {
       <div class="container">
           <h2>Your password has been successfully changed &#10004;</h2>
           <p>You can now log in with your new password.</p>
-          <a href="http://localhost:3000">Back to Website</a>
+          <a href=`${BASE_URL}`>Back to Website</a>
       </div>
   </body>
   </html>
