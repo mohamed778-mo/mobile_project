@@ -17,7 +17,7 @@ var importsSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    product_names: [{ 
+    services_names: [{ 
         type: String,
         required: true,
     }],
