@@ -38,12 +38,20 @@ const Login = async (req, res) => {
     const SECRETKEY = process.env.SECRETKEY;
     const token = jwt.sign({ id: user._id, type: userType }, SECRETKEY);
 
+//     res.cookie("access_token", `Bearer ${token}`, {
+//   expires: new Date(Date.now() + 60 * 60 * 24 * 1024 * 300),
+//   httpOnly: true,
+//   secure: true,
+//   sameSite: "None",
+//   path: "/"
+// });
+
     res.cookie("access_token", `Bearer ${token}`, {
-  expires: new Date(Date.now() + 60 * 60 * 24 * 1024 * 300),
   httpOnly: true,
-  secure: true,
-  sameSite: "None",
-  path: "/"
+  secure: false, // مؤقتًا للتجريب على localhost
+  sameSite: "Lax", // أو "None" مع secure: true
+  path: "/",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
     user.tokens.push(token);
