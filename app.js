@@ -36,11 +36,11 @@ app.use(express.json({ limit: LIMIT }));
 
 app.use(cookieParser());
 
-const ratelimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, 
-    message: "Too many requests from this IP, please try again later.",
-});
+// const ratelimiter = rateLimit({
+//     windowMs: 15 * 60 * 1000, // 15 minutes
+//     max: 100, 
+//     message: "Too many requests from this IP, please try again later.",
+// });
 
  app.use(ratelimiter); 
  app.use(hpp())
