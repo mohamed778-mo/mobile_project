@@ -27,6 +27,8 @@ app.use(compression());
 app.use(cors())
 app.use(helmet());
 
+app.set('trust proxy', 1);
+
 const LIMIT = '1000kb'; //500//
 app.use(bodyParser.json({ limit: LIMIT, extended: true }));
 app.use(bodyParser.urlencoded({ limit: LIMIT, extended: true }));
