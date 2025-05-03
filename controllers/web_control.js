@@ -83,10 +83,10 @@ const resend_otp=async(req,res)=>{
         user.otp = otp;
         user.otpExpire = otpExpire;
         await user.save();
-        const message = 'تم ارسال رمز التحقق على البريد الإلكتروني' ;
-        res.status(200).send({message});
-        
       await sendOTPEmail({ to: email, name: user.name, otp });
+
+      const message = 'تم ارسال رمز التحقق على البريد الإلكتروني' ;
+      res.status(200).send({message});
 
    
   } catch (error) {
