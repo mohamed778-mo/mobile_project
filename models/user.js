@@ -4,16 +4,16 @@ const bcryptjs = require('bcryptjs')
 
 var cartItemSchema = new mongoose.Schema({
     product_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Products',
         required: true,
     },
     version_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
     model_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
     model_name: {
@@ -21,7 +21,7 @@ var cartItemSchema = new mongoose.Schema({
         required: true
     },
     service_id: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             required: true,
     },
     service_name:{
@@ -45,17 +45,17 @@ var cartItemSchema = new mongoose.Schema({
 var saveProductSchema = new mongoose.Schema({
     
         product_id: { 
-            type: mongoose.Schema.Types.ObjectId, 
+            type: String, 
             ref: "Products" 
         },
         product_name: { 
             type: String 
         },
         version_id: { 
-            type: mongoose.Schema.Types.ObjectId 
+            type: String 
         },
         model_id: {
-            type: mongoose.Schema.Types.ObjectId,
+            type:String,
             required: true,
         },
         model_name: {
@@ -63,7 +63,7 @@ var saveProductSchema = new mongoose.Schema({
             required: true
         },
         service_id: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: String,
                 required: true,
         },
         service_name:{
