@@ -39,9 +39,12 @@ const Login = async (req, res) => {
     const token = jwt.sign({ id: user._id, type: userType }, SECRETKEY);
 
     res.cookie("access_token", `Bearer ${token}`, {
-      expires: new Date(Date.now() + 60 * 60 * 24 * 1024 * 300),
-      httpOnly: true,
-    });
+  expires: new Date(Date.now() + 60 * 60 * 24 * 1024 * 300),
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  path: "/"
+});
 
     user.tokens.push(token);
     await user.save();
