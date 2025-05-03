@@ -46,11 +46,11 @@ router.get('/website/user_get_service_in_model/:product_id/:version_id/:model_id
 
 
 
-router.post('/website/cart/add/:product_id/:service_id', auth, addToCart)
+router.post('/website/cart/add/:product_id/:version_id/:model_id/:service_id', auth, addToCart)
 router.get('/website/cart/view', auth, viewCart)
-router.patch('/website/cart/update_quantity/:product_id/:service_id', auth, updateCartQuantity)
+router.patch('/website/cart/update_quantity/:product_id/:version_id/:model_id/:service_id', auth, updateCartQuantity)
 router.get('/website/cart/total', auth, calculateTotal)
-router.delete('/website/remove_from_cart/:product_id/:service_id',auth,delete_from_cart)
+router.delete('/website/remove_from_cart/:product_id/:version_id/:model_id/:service_id',auth,delete_from_cart)
 
 
 
