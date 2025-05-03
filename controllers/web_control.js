@@ -10,7 +10,7 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 require("dotenv").config();
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const BASE_URL = process.env.BASE_URL || "https://mobile-project-xi.vercel.app";
 const user_Register = async (req, res) => {
   try {
     const   {name,email, mobile,password, address } = req.body;
