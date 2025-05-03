@@ -86,4 +86,41 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = {Login, logout};
+const checkAuth = async (req, res) => {
+  try {
+    const token =
+      req.cookies?.access_token?.split(" ")[1] ||
+      req.headers?.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ authenticated: false });
+    }
+
+    const SECRETKEY = process.env.SECRETKEY;
+    const decoded = jwt.verify(token, SECRETKEY);
+
+    let user = await User.findById(decoded.id);
+    let userType = "user";
+
+    if (!user) {
+      user = await Admin.findById(decoded.id);
+      userType = "admin";
+    }
+
+    if (!user) {
+      return res.status(401).json({ authenticated: false });
+    }
+
+    res.status(200).json({
+      authenticated: true,
+      user: {
+        name: user.name,
+        type: userType,
+      },
+    });
+  } catch (err) {
+    res.status(401).json({ authenticated: false });
+  }
+};
+
+module.exports = {Login, logout , checkAuth};
