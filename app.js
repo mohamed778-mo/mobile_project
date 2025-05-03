@@ -25,8 +25,8 @@ const app = express();
 
 app.use(compression()); 
 app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
+  origin: ['http://localhost:3000', 'https://mobile-project-xi.vercel.app'], // دومين الفرونت
+  credentials: true, // مهم علشان يسمح بالكوكيز
 }));
 app.use(helmet());
 
