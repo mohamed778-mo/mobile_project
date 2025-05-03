@@ -66,15 +66,12 @@ const Login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    const token =
-      req.headers?.authorization?.split(" ")[1] ||
-      req.cookies?.access_token?.split(" ")[1];
+    const token = req.cookies.access_token; // قراءة التوكن مباشرة من الكوكيز
 
     if (!token) {
       return res.status(401).json({ message: "لا يوجد توكن." });
     }
 
-   
     let user = await User.findOne({ tokens: token });
     let userType = "user";
 
@@ -88,8 +85,7 @@ const logout = async (req, res) => {
       await user.save();
     }
 
-  
-    res.clearCookie("access_token");
+    res.clearCookie("access_token"); // مسح الكوكيز بعد تسجيل الخروج
 
     res.status(200).json({ message: "تم تسجيل الخروج بنجاح!" });
   } catch (err) {
@@ -97,11 +93,10 @@ const logout = async (req, res) => {
   }
 };
 
+
 const checkAuth = async (req, res) => {
   try {
-    const token =
-      req.cookies?.access_token?.split(" ")[1] ||
-      req.headers?.authorization?.split(" ")[1];
+    const token = req.cookies.access_token; // هنا قمت بقراءة التوكن بدون "Bearer"
 
     if (!token) {
       return res.status(401).json({ authenticated: false });
@@ -133,5 +128,6 @@ const checkAuth = async (req, res) => {
     res.status(401).json({ authenticated: false });
   }
 };
+
 
 module.exports = {Login, logout , checkAuth};
