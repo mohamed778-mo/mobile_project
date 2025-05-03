@@ -18,7 +18,7 @@ const swaggerUi = require("swagger-ui-express");
 
 const user = require('./routers/user_router')
 const admin = require('./routers/admin_router')
-const login = require('./routers/login_router')
+const {Login, logout} = require('./routers/login_router')
 const payment = require('./routers/payment_router')
 
 const app = express();
@@ -48,9 +48,10 @@ app.use(cookieParser());
  app.use(xss())
 
 
-app.use('/app/user',user)
-app.use('/app/secure_admin',admin)
-app.use('/app/login_page', login);
+app.use('/app/user',user);
+app.use('/app/secure_admin',admin);
+app.use('/app/login_page', Login);
+app.use('/app/logout_page', logout);
 app.use('/app/payments', payment);
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
