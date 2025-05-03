@@ -38,7 +38,7 @@ const Login = async (req, res) => {
     const SECRETKEY = process.env.SECRETKEY;
     const token = jwt.sign({ id: user._id, type: userType }, SECRETKEY);
 
-    res.cookie("access_token", `Bearer ${token}`, {
+    res.cookie("access_token", token, {
   expires: new Date(Date.now() + 60 * 60 * 24 * 1024 * 300),
   httpOnly: true,
   secure: false,
