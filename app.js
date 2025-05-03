@@ -24,10 +24,13 @@ const payment = require('./routers/payment_router')
 const app = express();
 
 app.use(compression()); 
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://mobile-project-xi.vercel.app'], // دومين الفرونت
-  credentials: true, // مهم علشان يسمح بالكوكيز
-}));
+const corsOptions = {
+  origin: 'http://localhost:3000', // الفرونت إند
+  credentials: true,  // السماح بإرسال الكوكيز
+};
+
+app.use(cors(corsOptions));
+
 app.use(helmet());
 
 app.set('trust proxy', 1);
