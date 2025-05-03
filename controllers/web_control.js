@@ -232,51 +232,58 @@ const save_product = async (req, res) => {
     if (!user) return res.status(400).send("Please login or signup!!");
 
     const { product_id, version_id, model_id, service_id } = req.params;
+    const { service_type, service_price } = req.body;
 
-    const product = await Products.findOne({product_id});
-    if (!product) return res.status(404).send({ message: 'المنتج غير موجود!' });
+    const userData = await User.findById(user._id);
+    if (!userData) return res.status(404).send({ message: "المستخدم غير موجود!" });
 
    
+    const product = await Products.findOne({product_id:product_id});
+    if (!product) return res.status(404).send({ message: 'المنتج غير موجود!' });
+
     const version = product.versions.find(v => v.version_id.toString() === version_id);
     if (!version) return res.status(404).send({ message: 'الإصدار غير موجود!' });
 
     const model = version.model.find(m => m.model_id.toString() === model_id);
     if (!model) return res.status(404).send({ message: 'الموديل غير موجود!' });
 
-    
     const service = model.product_service.find(s => s.service_id.toString() === service_id);
     if (!service) return res.status(404).send({ message: 'الخدمة غير موجودة لهذا الموديل!' });
 
-   
-    const exists = user.my_save_products.some(item =>
-      item.product_id.toString() === product_id &&
-      item.version_id.toString() === version_id &&
+    
+    const alreadySaved = userData.my_save_products.some(item =>
       item.model_id.toString() === model_id &&
       item.service_id.toString() === service_id
     );
-    if (exists) return res.status(400).send({ message: 'الخدمة موجودة بالفعل في المحفوظات!' });
 
-  
-    user.my_save_products.push({
-      product_id: product._id,
+    if (alreadySaved) {
+      return res.status(400).send({ message: 'الخدمة موجودة بالفعل في المحفوظات!' });
+    }
+
+    
+    userData.my_save_products.push({
+      product_id: product_id,
       product_name: product.main_category,
       version_id: version.version_id,
       model_id: model.model_id,
       model_name: model.name,
       service_id: service.service_id,
       service_name: service.service_name,
-      service_price: service.service_rate,
-      service_type: Array.isArray(service.service_type) ? service.service_type.map(t => t.name).join(', ') : '',
+      service_type: service_type,
+      service_price: service_price,
       quantity: 1
     });
 
-    await user.save();
+    await userData.save();
+
     res.status(200).send({ message: 'تم حفظ الخدمة بنجاح!' });
 
   } catch (e) {
+    console.error("Error in save_product:", e);
     res.status(500).send(e.message);
   }
 };
+
 
 const get_all_save_products = async (req, res) => {
   try {
@@ -298,54 +305,30 @@ const delete_save_product = async (req, res) => {
 
     const { product_id, version_id, model_id, service_id } = req.params;
 
-    // طباعة للـ debugging (اختياري)
-    console.log('قبل السحب:', user.my_save_products.map(x => ({
-      pid: x.product_id.toString(),
-      vid: x.version_id?.toString(),
-      mid: x.model_id.toString(),
-      sid: x.service_id.toString()
-    })));
-
-    // نحول الستريات لـ ObjectId instances
-    const prodOid  = new mongoose.Types.ObjectId(product_id);
-    const verOid   = new mongoose.Types.ObjectId(version_id);
-    const modelOid = new mongoose.Types.ObjectId(model_id);
-    const servOid  = new mongoose.Types.ObjectId(service_id);
-
-    // نجيب المستخدم كامل كمستند
-    const doc = await User.findById(user._id);
-    if (!doc) 
+ 
+    const userData = await User.findById(user._id);
+    if (!userData) 
       return res.status(404).send({ message: 'المستخدم غير موجود!' });
+    
+     const findDataInSave=userData.my_save_products.find(item =>
+      item.product_id === product_id &&
+      item.version_id === version_id &&
+      item.model_id === model_id &&
+      item.service_id=== service_id
+      );
+    if (!findDataInSave) 
+      return res.status(404).send({ message: 'الخدمة غير موجودة في المحفوظات!' });
 
-    // نلاقي فهرس العنصر في المصفوفة
-    const idx = doc.my_save_products.findIndex(item =>
-      item.product_id.equals(prodOid) &&
-      item.version_id.equals(verOid) &&
-      item.model_id.equals(modelOid) &&
-      item.service_id.equals(servOid)
-    );
-
-    if (idx === -1) {
-      return res.status(404).send({ message: 'العنصر غير موجود في المحفوظات!' });
-    }
-
-    // نشيل العنصر
-    doc.my_save_products.splice(idx, 1);
-
-    // نحفظ التغييرات
-    await doc.save();
-
-    // (اختياري) طباعة ما بعد الحذف
-    console.log('بعد السحب:', doc.my_save_products.map(x => ({
-      pid: x.product_id.toString(),
-      vid: x.version_id?.toString(),
-      mid: x.model_id.toString(),
-      sid: x.service_id.toString()
-    })));
-
+    userData.my_save_products.pull({
+      product_id: product_id,
+      version_id: version_id,
+      model_id: model_id,
+      service_id: service_id
+    })
+    await userData.save();
+    
     res.status(200).send({
-      message: 'تمت إزالة الخدمة من المحفوظات بنجاح!',
-      my_save_products: doc.my_save_products
+      message: 'تمت إزالة الخدمة من المحفوظات بنجاح!'
     });
 
   } catch (e) {
@@ -363,6 +346,7 @@ const addToCart = async (req, res) => {
     if (!user) return res.status(400).send("Please login or signup!!");
 
     const { product_id, version_id, model_id, service_id } = req.params;
+    const{service_type,service_price} = req.body;
 
     const product = await Products.findOne({product_id});
     if (!product) return res.status(404).send({ message: 'المنتج غير موجود!' });
@@ -377,22 +361,20 @@ const addToCart = async (req, res) => {
     if (!service) return res.status(404).send({ message: 'الخدمة غير موجودة!' });
 
     const exists = user.cart.some(item =>
-      item.product_id.toString() === product_id &&
-      item.version_id.toString() === version_id &&
       item.model_id.toString() === model_id &&
       item.service_id.toString() === service_id
     );
     if (exists) return res.status(400).send({ message: 'الخدمة موجودة بالفعل في السلة!' });
 
     user.cart.push({
-      product_id: product._id,
+      product_id: product_id,
       version_id: version.version_id,
       model_id: model.model_id,
       model_name: model.name,
       service_id: service.service_id,
       service_name: service.service_name,
-      service_price: service.service_rate,
-      service_type: Array.isArray(service.service_type) ? service.service_type.map(t => t.name).join(', ') : '',
+      service_type:service_type,
+      service_price: service_price,
       quantity: 1
     });
 
@@ -411,18 +393,16 @@ const viewCart = async (req, res) => {
     const user = req.user;
     if (!user) return res.status(400).send("من فضلك قم بتسجيل الدخول أولاً");
 
-    await user.populate({ path: 'cart.product_id', select: 'main_category main_photo' });
+   
 
     let totalCartPrice = 0;
     const cartItems = user.cart.map(item => {
-      const prod = item.product_id;
-      if (!prod) return null;
+      const service = item.service_id;
+      if (!service) return null;
       const lineTotal = item.service_price * item.quantity;
       totalCartPrice += lineTotal;
       return {
-        product_id: prod._id,
-        product_name: prod.main_category,
-        product_photo: prod.main_photo,
+        product_id: item.product_id,
         version_id: item.version_id,
         model_id: item.model_id,
         model_name: item.model_name,
@@ -433,7 +413,7 @@ const viewCart = async (req, res) => {
         quantity: item.quantity,
         total_price: lineTotal
       };
-    }).filter(x => x);
+    })
 
     res.status(200).send({ cartItems, totalCartPrice });
   } catch (e) {
@@ -495,24 +475,29 @@ const delete_from_cart = async (req, res) => {
 
     const { product_id, version_id, model_id, service_id } = req.params;
 
-    await User.findByIdAndUpdate(
-      user._id,
-      { $pull: { cart: {
-          product_id: mongoose.Types.ObjectId(product_id),
-          version_id: mongoose.Types.ObjectId(version_id),
-          model_id: mongoose.Types.ObjectId(model_id),
-          service_id: mongoose.Types.ObjectId(service_id)
-        }
-      }},
-      { new: true }
-    );
+    const userData = await User.findById(user._id);
+
+
+    const findDataInSave=userData.cart.find(item =>
+      item.model_id === model_id &&
+      item.service_id=== service_id
+      );
+    if (!findDataInSave) 
+      return res.status(404).send({ message: 'الخدمة غير موجودة في المحفوظات!' });
+
+    userData.cart.pull({
+      product_id: product_id,
+      version_id: version_id,
+      model_id: model_id,
+      service_id: service_id
+    })
+    await userData.save();
 
     res.status(200).send({ message: 'تم إزالة الخدمة من السلة بنجاح!' });
   } catch (e) {
     res.status(500).send(e.message);
   }
 };
-
 
 
 
