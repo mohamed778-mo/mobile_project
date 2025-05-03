@@ -8,7 +8,7 @@ const sendOTPEmail = async ({ to, name, otp }) => {
       secure: true,
       auth: {
         user: 'icmobile.company@gmail.com',
-        pass: process.env.USER_PASS, 
+        pass: 'jcuu qwsh jvpe ncaz', 
       },
     });
 
