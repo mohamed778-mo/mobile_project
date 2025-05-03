@@ -1,6 +1,6 @@
 
 // config.js
-const environment = 'production'; // Change to 'production' when ready
+const environment = 'testing'; // Change to 'production' when ready
 
 const config = {
     testing: {
@@ -10,8 +10,8 @@ const config = {
     },
     production: {
         baseUrl: 'https://restapi.paylink.sa',
-        apiId: 'APP_ID_1724877001963',
-        secretKey:'d9077b9e-f924-3861-a35f-5bb524f5b19f',
+        apiId: process.env.PAYLINK_API_ID,
+        secretKey: process.env.PAYLINK_API_KEY,
     },
 };
 
