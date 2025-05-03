@@ -73,7 +73,10 @@ const resend_otp=async(req,res)=>{
   try {
     const email=req.body.email
     const user = await User.findOne({email:email});
-    if (user) {
+    if (!user) {
+      const message = 'البريد الإلكتروني غير صحيح' ;
+      return res.status(404).send({message});
+    }
       
         const otp = crypto.randomInt(10000000, 99999999).toString();
         const otpExpire = Date.now() + 10 * 60 * 1000; 
@@ -85,10 +88,7 @@ const resend_otp=async(req,res)=>{
         
       await sendOTPEmail({ to: email, name: user.name, otp });
 
-    }else{
-      const message = 'البريد الإلكتروني غير موجود' ;
-      return res.status(404).send({message})
-    }
+   
   } catch (error) {
     res.status(500).send(error.message);
   }
