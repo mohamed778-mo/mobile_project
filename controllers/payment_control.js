@@ -2,7 +2,7 @@ const dns = require('dns');
 const axios = require('axios');
 
 const Imports = require('../models/imports'); 
-const Products = require("../models/products")
+const Products = require('../models/products');
 const User = require('../models/user'); 
 
 require('dotenv').config();
@@ -18,28 +18,40 @@ const createPayment = async (req, res) => {
 
     const user_data = await User.findById(user._id);
     if (!user_data) {
-      return res.status(400).send('User not found');
+      return res.status(400).send('User not found,please login or signup');
     }
 
     const products = payment_data.products;
     let totalAmount = 0;
     const product_names = [];
-    const product_ids = [];
+    const service_ids = [];
 
    
     for (let item of products) {
-      const product = await Products.findById(item.product_id);
+      const product = await Products.find({product_id:item.product_id});
       if (!product) continue;
 
-      const service = product.product_service.find(
+      const version = product.versions.find(
+        s => s.version_id.toString() === item.version_id.toString()
+      );
+
+      if (!version) continue;
+
+      const model = version.model.find(
+        s => s.model_id.toString() === item.model_id.toString()
+      );
+
+      if (!model) continue;
+
+      const service = model.product_service.find(
         s => s.service_id.toString() === item.service_id.toString()
       );
 
       if (!service) continue;
 
-      totalAmount += service.service_price * item.quantity;
-      product_names.push(product.main_category);
-      product_ids.push(product._id);
+      totalAmount += item.service_price * item.quantity;
+      product_names.push(`${product.main_category}-${item.model_name}-${item.service_name}`);
+      service_ids.push(item.service_id);
     }
 
     totalAmount += delivery_fee;
@@ -75,7 +87,7 @@ const createPayment = async (req, res) => {
             client_address: user_data.address,
             client_mobile: user_data.mobile,
             product_names: product_names,
-            product_ids: product_ids,
+            service_ids: service_ids,
             totalAmount: totalAmount,
             delivery_fee: delivery_fee,
             is_buy: false,
@@ -93,11 +105,11 @@ const createPayment = async (req, res) => {
       
         const newImport = new Imports({
           client_id: user._id,
-          client_name: `${user_data.firstname} ${user_data.lastname}`,
+          client_name: user_data.name,
           client_address: user_data.address,
           client_mobile: user_data.mobile,
           product_names: product_names,
-          product_ids: product_ids,
+          service_ids: service_ids,
           totalAmount: totalAmount,
           delivery_fee: delivery_fee,
           is_buy: false,
