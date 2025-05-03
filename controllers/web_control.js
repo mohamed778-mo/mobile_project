@@ -663,10 +663,8 @@ const resetPassword =  async (req, res) => {
     user.passwordChangedAt = Date.now();
 
     await user.save();
-
-    res.send(`
-     
-  <!DOCTYPE html>
+    
+  res.send(`<!DOCTYPE html> 
   <html lang="en">
   <head>
       <meta charset="UTF-8">
@@ -742,13 +740,10 @@ const resetPassword =  async (req, res) => {
       <div class="container">
           <h2>Your password has been successfully changed &#10004;</h2>
           <p>You can now log in with your new password.</p>
-          <a href=`${BASE_URL}`>Back to Website</a>
+          <a href="https://mobile-project-xi.vercel.app">Back to Website</a>
       </div>
   </body>
-  </html>
-
-
-  `);
+  </html>`);
 
   } catch (e) {
     res.status(500).send('Server error.');
