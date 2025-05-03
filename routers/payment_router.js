@@ -14,7 +14,7 @@ const nodemailer = require("nodemailer");
 
 router.post('/create-payment',auth, async (req, res) => {
     try {
-        const { amount,  currency, products ,delivery_fee ,deliveryTime ,location  } = req.body;
+        const {  currency, services ,delivery_fee ,deliveryTime ,location  } = req.body;
     
         const user = req.user;
 
@@ -27,24 +27,36 @@ router.post('/create-payment',auth, async (req, res) => {
       
         
         let totalAmount = 0;
-        const product_names = [];
-        const product_ids = [];
-
-        products.forEach(product => {
-            totalAmount += product.price * product.qty; 
-            product_names.push(product.title);  
+        const services_names = [];
+        const products = [];
+        
+        services.forEach(service => {
+            totalAmount += service.service_price * service.quantity;
+            services_names.push(service.service_name);
+        
+            products.push({
+                title: service.service_name,
+                price: service.service_price,
+                qty: service.quantity,
+            });
         });
-
+        
         totalAmount += delivery_fee;
-       
+
+        let service_full_name =[]
+        services.forEach(service => {
+            service_full_name.push(`${service.product_name}-${service.model_name}-${service.service_name}-${service.service_type}`)
+           
+        });
+        
         const paymentUrl = await createInvoice({
             orderNumber:`ORDER-${Date.now()}`,
-            amount,
-            callBackUrl: "https://www.admin.nine2030.com/app/payments/payment-success",
-            cancelUrl: "https://www.admin.nine2030.com/app/payments/payment-cancel",
-            clientName:`${user_data.firstname} ${user_data.lastname}`,
-            clientEmail:user_data.email,
-            clientMobile:user_data.mobile,
+            amount: totalAmount,
+            callBackUrl: "http://localhost:3000/app/payments/payment-success",
+            cancelUrl: "http://localhost:3000/app/payments/payment-cancel",
+            clientName: user_data.name,
+            clientEmail: user_data.email,
+            clientMobile: user_data.mobile,
             currency,
             products,
             smsMessage:"thanks",
@@ -52,13 +64,14 @@ router.post('/create-payment',auth, async (req, res) => {
             displayPending:true,
             note:"See You Soon",
         });
+        
        const transactionNo = paymentUrl.split('/').pop()
      const newImport = new Imports({
             client_id: user._id,
-            client_name: `${user_data.firstname} ${user_data.lastname}`,
+            client_name: user_data.name,
             client_address: user_data.address,
             client_mobile: user_data.mobile,
-            product_names: product_names,
+            services_names: service_full_name,
             totalAmount: totalAmount,
             delivery_fee: delivery_fee,
             transactionNo:transactionNo,
@@ -90,7 +103,7 @@ router.get('/get-invoice/:transactionNo', async (req, res) => {
 
 router.post('/cash-payment',auth, async (req, res) => {
     try {
-        const { products, delivery_fee , deliveryTime , location} = req.body;
+        const { services, delivery_fee , deliveryTime , location} = req.body;
         const user = req.user;
 
         const user_data = await User.findById(user._id);
@@ -99,23 +112,22 @@ router.post('/cash-payment',auth, async (req, res) => {
         }
 
         let totalAmount = 0;
-        const product_names = [];
-        
-
-        products.forEach(product => {
-            totalAmount += product.price * product.qty;
-            product_names.push(product.title)
-           
-        });
+       
 
         totalAmount += delivery_fee;
 
+        let service_full_name =[]
+        services.forEach(service => {
+            service_full_name.push(`${service.product_name}-${service.model_name}-${service.service_name}-${service.service_type}`)
+           
+        });
+
         const newImport = new Imports({
             client_id: user._id,
-            client_name: `${user_data.firstname} ${user_data.lastname}`,
+            client_name: user_data.name,
             client_address: user_data.address,
             client_mobile: user_data.mobile,
-            product_names: product_names,
+            services_names: service_full_name,
             totalAmount: totalAmount,
             delivery_fee: delivery_fee,
             is_buy: false,
@@ -131,17 +143,17 @@ router.post('/cash-payment',auth, async (req, res) => {
             service: process.env.SERVICE,
             secure: true,
             auth: {
-              user: process.env.USER_EMAIL,
+              user:'icmobile.company@gmail.com',
               pass: process.env.USER_PASS,
             },
           });
       
           async function main() {
             const info = await transporter.sendMail({
-              from: process.env.USER_EMAIL,
+              from: 'icmobile.company@gmail.com',
               to: 'ninetwo2030@gmail.com',
-              subject: "NOTIFICATION",
-              html: `<P>السلام عليكم استاذ عبد العزيز .هناك عميل طلب شراء منتج "كاش"، برجاء تفقد موقعك!!</P>`,
+              subject: "NOTIFICATION CASH PAYMENT",
+              html: `<P> السلام عليكم استاذ عبد العزيز .هناك عميل طلب شراء منتج "كاش"، برجاء تفقد موقعك الالكترونى!!</P>`,
             });
       
             console.log("Message sent");
@@ -181,17 +193,17 @@ router.get('/payment-success', async (req, res) => {
             service: process.env.SERVICE,
             secure: true,
             auth: {
-              user: process.env.USER_EMAIL,
+              user: 'icmobile.company@gmail.com',
               pass: process.env.USER_PASS,
             },
           });
       
           async function main() {
             const info = await transporter.sendMail({
-              from: process.env.USER_EMAIL,
+              from: 'icmobile.company@gmail.com',
               to: 'ninetwo2030@gmail.com',
-              subject: "NOTIFICATION",
-              html: `<P> السلام عليكم استاذ عبد العزيز .هناك عميل اتم شراء منتج. برجاء تفقد موقعك !!</P>`,
+              subject: "NOTIFICATION BUY PAYMENT",
+              html: `<P> السلام عليكم استاذ عبد العزيز .هناك عميل اتم شراء منتج. برجاء تفقد موقعك الالكترونى!!</P>`,
             });
       
             console.log("Message sent");
