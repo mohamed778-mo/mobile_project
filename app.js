@@ -24,7 +24,10 @@ const payment = require('./routers/payment_router')
 const app = express();
 
 app.use(compression()); 
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(helmet());
 
 app.set('trust proxy', 1);
