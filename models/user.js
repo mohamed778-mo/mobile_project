@@ -8,6 +8,9 @@ var cartItemSchema = new mongoose.Schema({
         ref: 'Products',
         required: true,
     },
+    product_name: { 
+        type: String 
+    },
     version_id: {
         type: String,
         required: true,
