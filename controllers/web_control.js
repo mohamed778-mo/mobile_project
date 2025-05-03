@@ -368,6 +368,7 @@ const addToCart = async (req, res) => {
 
     user.cart.push({
       product_id: product_id,
+      product_name: product.main_category,
       version_id: version.version_id,
       model_id: model.model_id,
       model_name: model.name,
@@ -403,6 +404,7 @@ const viewCart = async (req, res) => {
       totalCartPrice += lineTotal;
       return {
         product_id: item.product_id,
+        product_name: item.product_name,
         version_id: item.version_id,
         model_id: item.model_id,
         model_name: item.model_name,
