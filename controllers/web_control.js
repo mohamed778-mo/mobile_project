@@ -32,7 +32,7 @@ const user_Register = async (req, res) => {
        verfied:false
       });
     
-      await sendOTPEmail({ to: newUser.email, name: newUser.name, otp });
+      await sendOTPEmail({ to: email, name:name, otp });
 
     await newUser.save();
     const message = 'تم ارسال رمز التحقق على البريد الإلكتروني' ;
