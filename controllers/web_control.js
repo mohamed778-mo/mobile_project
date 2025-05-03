@@ -83,7 +83,7 @@ const resend_otp=async(req,res)=>{
         const message = 'تم ارسال رمز التحقق على البريد الإلكتروني' ;
         res.status(200).send({message});
         
-      await sendOTPEmail({ to: user.email, name: user.name, otp });
+      await sendOTPEmail({ to: email, name: user.name, otp });
 
     }else{
       const message = 'البريد الإلكتروني غير موجود' ;
