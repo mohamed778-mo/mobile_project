@@ -262,7 +262,27 @@ const get_all_models_in_version = async (req, res) => {
     res.status(500).send(e.message);
   }
 };
+const get_all_versions_and_models_in_product = async (req, res) => {
+  try {
+    const { product_id } = req.params;
+    const products = await Products.findOne({ product_id }, 'versions');
+    if (!products) return res.status(404).send('المنتج غير موجود');
 
+    const versions_without_models = products.versions.map(v => ({
+      version_id: v.version_id,
+      version_name: v.version_name,
+      model: v.model.map(m => ({
+        model_id: m.model_id,
+        name: m.name,
+      })),
+      
+    }));
+
+    res.status(200).json(versions_without_models);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+};
 const get_all_services_in_model = async (req, res) => {
   try {
     const { product_id, version_id, model_id } = req.params;
@@ -467,6 +487,7 @@ module.exports = {
   get_all_versions_in_product,
   get_all_models_in_version,
   get_all_services_in_model,
+  get_all_versions_and_models_in_product,
 
   delete_product,
   delete_all_products,
