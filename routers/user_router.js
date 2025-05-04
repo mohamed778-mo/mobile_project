@@ -40,9 +40,9 @@ router.delete('/website/delete_save_product/:product_id/:version_id/:model_id/:s
 
 
 router.get('/website/get_all_products',  user_get_all_products)
-router.get('/website/user_get_versions_in_product/:product_id', auth,  user_get_versions_in_product)
-router.get('/website/user_get_models_in_version/:product_id/:version_id', auth,  user_get_models_in_version)
-router.get('/website/user_get_service_in_model/:product_id/:version_id/:model_id', auth,  user_get_service_in_model)
+router.get('/website/user_get_versions_in_product/:product_id',  user_get_versions_in_product)
+router.get('/website/user_get_models_in_version/:product_id/:version_id',  user_get_models_in_version)
+router.get('/website/user_get_service_in_model/:product_id/:version_id/:model_id',  user_get_service_in_model)
 
 
 
