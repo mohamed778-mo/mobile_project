@@ -18,6 +18,7 @@ const {
   get_all_versions_in_product,
   get_all_models_in_version,
   get_all_services_in_model,
+  get_all_versions_and_models_in_product,
 
   delete_product,
   delete_all_products,
@@ -46,6 +47,7 @@ router.patch('/edit_versions_in_product/:product_id/:version_id',adminAuth,edit_
 router.patch('/edit_model_and_service_in_version/:product_id/:version_id/:model_id/:service_id',adminAuth,Upload.any(),edit_model_and_service_in_version)
 
 router.get('/get_all_supported_comman_reapir_devices',adminAuth,get_all_supported_comman_reapir_devices)
+router.get('/get_all_versions_and_models_in_product/:product_id',adminAuth,get_all_versions_and_models_in_product)
 router.get('/get_all_versions_in_product/:product_id',adminAuth,get_all_versions_in_product)
 router.get('/get_all_models_in_version/:product_id/:version_id',adminAuth,get_all_models_in_version)
 router.get('/get_all_services_in_model/:product_id/:version_id/:model_id',adminAuth,get_all_services_in_model)
