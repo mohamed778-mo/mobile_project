@@ -25,12 +25,13 @@ const book_appointment = require('./routers/book_appointment_router')
 const app = express();
 
 app.use(compression()); 
-const corsOptions = {
-  origin: ['http://localhost:3000','https://icmobile-montaser-gohars-projects.vercel.app'] ,
-  credentials: true,  
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+  
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true 
+}));
 
 app.use(helmet());
 
