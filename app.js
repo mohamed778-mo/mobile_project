@@ -20,6 +20,7 @@ const user = require('./routers/user_router')
 const admin = require('./routers/admin_router')
 const {Login, logout , checkAuth} = require('./routers/login_router')
 const payment = require('./routers/payment_router')
+const book_appointment = require('./routers/book_appointment_router')
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use('/app/secure_admin',admin);
 app.use('/app/login_page', Login);
 app.use('/app/logout_page', logout);
 app.use('/app/check_auth', checkAuth);
+app.use('/app/book_appointment', book_appointment);
 app.use('/app/payments', payment);
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
