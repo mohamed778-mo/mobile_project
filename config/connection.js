@@ -3,6 +3,7 @@ require("dotenv").config()
 
 
 const url='mongodb+srv://moelmala086:cxHq8hqBayLyNuKj@clusteric.pkcjzzn.mongodb.net/?retryWrites=true&w=majority&appName=ClusterIC'
+
 const DBconnection =()=>{ 
 mongoose.connect(url)
 .then(()=>{console.log('done connection !!')})
