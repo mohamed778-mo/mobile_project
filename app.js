@@ -26,7 +26,7 @@ const app = express();
 
 app.use(compression()); 
 const corsOptions = {
-  origin: ['http://localhost:3000','https://icmobile-montaser-gohars-projects.vercel.app/','https://mobile-project-xi.vercel.app/'] ,
+  origin: ['http://localhost:3000','https://icmobile-montaser-gohars-projects.vercel.app'] ,
   credentials: true,  
 };
 
