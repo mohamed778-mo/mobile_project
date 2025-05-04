@@ -26,8 +26,8 @@ const app = express();
 
 app.use(compression()); 
 const corsOptions = {
-  origin: 'http://localhost:3000', // الفرونت إند
-  credentials: true,  // السماح بإرسال الكوكيز
+  origin: ['http://localhost:3000','https://icmobile-montaser-gohars-projects.vercel.app/','https://mobile-project-xi.vercel.app/'] ,
+  credentials: true,  
 };
 
 app.use(cors(corsOptions));
