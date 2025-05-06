@@ -46,7 +46,7 @@ const add_main_product = async (req, res) => {
     
 
    
-   const existdata = await Products.findOne({ arabic_main_category:english_main_category,english_main_category:english_main_category });
+   const existdata = await Products.findOne({ arabic_main_category:arabic_main_category , english_main_category:english_main_category });
     const message_exist =req.language==='ar'?'هذا المنتج موجود بالفعل':'this product already exist';
    if (existdata) return res.status(400).send(message_exist);
 
