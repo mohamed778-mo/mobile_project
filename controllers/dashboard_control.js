@@ -34,21 +34,20 @@ const admin_Register = async (req, res) => {
 
 
 /////////////////////////////////////////////
-const add_main_product = async (req, res) => {
+cconst add_main_product = async (req, res) => {
   try {
-    let { arabic_main_category,english_main_category, english_supported_list,arabic_supported_list, arabic_comman_reapir,english_comman_reapir, icon } = req.body;
+    console.log("Language:", req.language);  // تحقق من أن اللغة مضبوطة بشكل صحيح
+    let { arabic_main_category, english_main_category, english_supported_list, arabic_supported_list, arabic_comman_reapir, english_comman_reapir, icon } = req.body;
     const main_photo = req.files?.find(f => f.fieldname === 'main_photo');
 
     if (typeof english_supported_list === 'string') english_supported_list = JSON.parse(english_supported_list);
     if (typeof arabic_supported_list === 'string') arabic_supported_list = JSON.parse(arabic_supported_list);
     if (typeof arabic_comman_reapir === 'string') arabic_comman_reapir = JSON.parse(arabic_comman_reapir);
     if (typeof english_comman_reapir === 'string') english_comman_reapir = JSON.parse(english_comman_reapir);
-    
 
-   
-   const existdata = await Products.findOne({ arabic_main_category:arabic_main_category , english_main_category:english_main_category });
-    const message_exist =req.language==='ar'?'هذا المنتج موجود بالفعل':'this product already exist';
-   if (existdata) return res.status(400).send(message_exist);
+    const existdata = await Products.findOne({ arabic_main_category: arabic_main_category, english_main_category: english_main_category });
+    const message_exist = req.language === 'ar' ? 'هذا المنتج موجود بالفعل' : 'This product already exists';
+    if (existdata) return res.status(400).send(message_exist);
 
     const newProduct = new Products({
       arabic_main_category,
@@ -60,13 +59,15 @@ const add_main_product = async (req, res) => {
       english_comman_reapir,
       icon
     });
-    const message = req.language === 'ar' ?'تم إنشاء المنتج بنجاح!':'product is created success'
+
+    const message = req.language === 'ar' ? 'تم إنشاء المنتج بنجاح!' : 'Product is created successfully';
     await newProduct.save();
     res.status(201).send({ message: message, product: newProduct });
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
+
 
 const add_versions_and_models_in_product = async (req, res) => {
   try {
