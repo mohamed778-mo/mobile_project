@@ -2,7 +2,7 @@ const router = require('express').Router()
 const User = require("../models/user");
 
 const {auth}=require('../middleware/auth')
-
+const { setLanguage } = require('../middleware/setLanguage'); 
 
 const {
   user_Register,
@@ -29,28 +29,28 @@ const {
   resetPassword,
 }=require('../controllers/web_control')
 
-router.post('/website/user_register',user_Register)
-router.post('/website/verify',verify)
-router.post('/website/resend_otp',resend_otp)
+router.post('/website/user_register',setLanguage,user_Register)
+router.post('/website/verify',setLanguage,verify)
+router.post('/website/resend_otp',setLanguage,resend_otp)
 
 
-router.post('/website/save_product/:product_id/:version_id/:model_id/:service_id',auth,save_product)
-router.get('/website/get_all_save_products',auth,get_all_save_products)
-router.delete('/website/delete_save_product/:product_id/:version_id/:model_id/:service_id',auth,delete_save_product)
+router.post('/website/save_product/:product_id/:version_id/:model_id/:service_id',auth,setLanguage,save_product)
+router.get('/website/get_all_save_products',auth,setLanguage,get_all_save_products)
+router.delete('/website/delete_save_product/:product_id/:version_id/:model_id/:service_id',auth,setLanguage,delete_save_product)
 
 
-router.get('/website/get_all_products',  user_get_all_products)
-router.get('/website/user_get_versions_in_product/:product_id',  user_get_versions_in_product)
-router.get('/website/user_get_models_in_version/:product_id/:version_id',  user_get_models_in_version)
-router.get('/website/user_get_service_in_model/:product_id/:version_id/:model_id',  user_get_service_in_model)
+router.get('/website/get_all_products',setLanguage,  user_get_all_products)
+router.get('/website/user_get_versions_in_product/:product_id',setLanguage,  user_get_versions_in_product)
+router.get('/website/user_get_models_in_version/:product_id/:version_id',setLanguage,  user_get_models_in_version)
+router.get('/website/user_get_service_in_model/:product_id/:version_id/:model_id', setLanguage, user_get_service_in_model)
 
 
 
-router.post('/website/cart/add/:product_id/:version_id/:model_id/:service_id', auth, addToCart)
-router.get('/website/cart/view', auth, viewCart)
-router.patch('/website/cart/update_quantity/:product_id/:version_id/:model_id/:service_id', auth, updateCartQuantity)
-router.get('/website/cart/total', auth, calculateTotal)
-router.delete('/website/remove_from_cart/:product_id/:version_id/:model_id/:service_id',auth,delete_from_cart)
+router.post('/website/cart/add/:product_id/:version_id/:model_id/:service_id', auth,setLanguage, addToCart)
+router.get('/website/cart/view', auth, setLanguage,viewCart)
+router.patch('/website/cart/update_quantity/:product_id/:version_id/:model_id/:service_id', auth,setLanguage, updateCartQuantity)
+router.get('/website/cart/total', auth,setLanguage, calculateTotal)
+router.delete('/website/remove_from_cart/:product_id/:version_id/:model_id/:service_id',auth,setLanguage,delete_from_cart)
 
 
 
