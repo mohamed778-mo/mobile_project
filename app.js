@@ -21,13 +21,13 @@ const admin = require('./routers/admin_router')
 const {Login, logout , checkAuth} = require('./routers/login_router')
 const payment = require('./routers/payment_router')
 const book_appointment = require('./routers/book_appointment_router')
-
-
+const { setLanguage } = require('./middleware/setLanguage');
 
 
 
 const app = express();
 
+app.use(setLanguage); 
 app.use(compression()); 
 app.use(cors({
   
