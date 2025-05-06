@@ -42,8 +42,10 @@ const add_main_product = async (req, res) => {
     if (typeof supported_list === 'string') supported_list = JSON.parse(supported_list);
     if (typeof comman_reapir === 'string') comman_reapir = JSON.parse(comman_reapir);
 
-    const existdata = await Products.findOne({ main_category });
-    if (existdata) return res.status(400).send('هذا المنتج موجود بالفعل');
+   
+   const existdata = await Products.findOne({ arabic_main_category:english_main_category,english_main_category:english_main_category });
+    const message_exist =req.language==='ar'?'هذا المنتج موجود بالفعل':'this product already exist';
+   if (existdata) return res.status(400).send(message_exist);
 
     const newProduct = new Products({
       arabic_main_category,
