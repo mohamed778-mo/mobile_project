@@ -44,9 +44,7 @@ var AdminSchema = new mongoose.Schema({
             expiresIn:"120d"
         }
     ],
-    address:{
-        type:String
-    },
+   
     verfied:{
         type:Boolean,
         default:false

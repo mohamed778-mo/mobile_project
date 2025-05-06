@@ -6,13 +6,16 @@ const serviceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true
   },
-  service_name: {
+  service_arabic_name: {
+    type: String,
+    required: true
+  },
+  service_english_name: {
     type: String,
     required: true
   },
   service_description: {
     type: String,
-    required: true
   },
   service_photo: {
     type: String,
@@ -23,7 +26,8 @@ const serviceSchema = new mongoose.Schema({
     default: 10
   },
   service_type: [{
-    name: { type: String },
+    arabic_name: { type: String },
+    english_name: { type: String },
     price: { type: Number }
   }]
   
@@ -31,10 +35,12 @@ const serviceSchema = new mongoose.Schema({
 
 const versionSchema = new mongoose.Schema({
   version_id: { type: mongoose.Schema.Types.ObjectId },
-  version_name:{ type: String},
+  version_arabic_name:{ type: String},
+  version_english_name:{ type: String},
   model: [{
     model_id: { type: mongoose.Schema.Types.ObjectId },
-    name: { type: String },
+    arabic_name: { type: String },
+    english_name: { type: String },
     product_service: [serviceSchema]
 }],
   
@@ -49,7 +55,11 @@ const productsSchema = new mongoose.Schema({
       unique: true
   },
   
-  main_category: {
+  arabic_main_category: {
+    type: String,
+    required: true
+  },
+  english_main_category: {
     type: String,
     required: true
   },
@@ -61,17 +71,29 @@ const productsSchema = new mongoose.Schema({
     type: String,
     default: 'empty'
   },
-  supported_list: [{
+  arabic_supported_list: [{
     
       type: String,
       required: true
   
     
 }],
-  comman_reapir: [{
+english_supported_list: [{
+    
+  type: String,
+  required: true
+
+
+}],
+  arabic_comman_reapir: [{
    
       type: String,
       
+}],
+english_comman_reapir: [{
+   
+  type: String,
+  
 }],
 
   versions: [versionSchema],

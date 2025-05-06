@@ -9,10 +9,6 @@ var importsSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    client_address:{
-        type:String,
-        required:true,
-    },
     client_mobile:{
         type:String,
         required:true,

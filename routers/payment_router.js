@@ -14,7 +14,7 @@ const nodemailer = require("nodemailer");
 
 router.post('/create-payment',auth, async (req, res) => {
     try {
-        const {  currency, services ,delivery_fee ,deliveryTime ,location  } = req.body;
+        const {  currency, services ,delivery_fee ,deliveryTime   } = req.body;
     
         const user = req.user;
 
@@ -69,7 +69,6 @@ router.post('/create-payment',auth, async (req, res) => {
      const newImport = new Imports({
             client_id: user._id,
             client_name: user_data.name,
-            client_address: user_data.address,
             client_mobile: user_data.mobile,
             services_names: service_full_name,
             totalAmount: totalAmount,
@@ -77,7 +76,7 @@ router.post('/create-payment',auth, async (req, res) => {
             transactionNo:transactionNo,
             is_buy: false, 
             deliveryTime:deliveryTime,
-            location:location
+            
         });
 
         await newImport.save();
@@ -125,7 +124,6 @@ router.post('/cash-payment',auth, async (req, res) => {
         const newImport = new Imports({
             client_id: user._id,
             client_name: user_data.name,
-            client_address: user_data.address,
             client_mobile: user_data.mobile,
             services_names: service_full_name,
             totalAmount: totalAmount,
@@ -153,7 +151,7 @@ router.post('/cash-payment',auth, async (req, res) => {
               from: 'icmobile.company@gmail.com',
               to: 'ninetwo2030@gmail.com',
               subject: "NOTIFICATION CASH PAYMENT",
-              html: `<P> السلام عليكم استاذ عبد العزيز .هناك عميل طلب شراء منتج "كاش"، برجاء تفقد موقعك الالكترونى!!</P>`,
+              html: `<P> السلام عليكم استاذ احمد .هناك عميل طلب شراء منتج "كاش"، برجاء تفقد موقعك الالكترونى!!</P>`,
             });
       
             console.log("Message sent");
@@ -203,7 +201,7 @@ router.get('/payment-success', async (req, res) => {
               from: 'icmobile.company@gmail.com',
               to: 'ninetwo2030@gmail.com',
               subject: "NOTIFICATION BUY PAYMENT",
-              html: `<P> السلام عليكم استاذ عبد العزيز .هناك عميل اتم شراء منتج. برجاء تفقد موقعك الالكترونى!!</P>`,
+              html: `<P> السلام عليكم استاذ احمد .هناك عميل اتم شراء منتج. برجاء تفقد موقعك الالكترونى!!</P>`,
             });
       
             console.log("Message sent");

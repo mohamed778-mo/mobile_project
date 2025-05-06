@@ -8,7 +8,10 @@ var cartItemSchema = new mongoose.Schema({
         ref: 'Products',
         required: true,
     },
-    product_name: { 
+    product_arabic_name: { 
+        type: String 
+    },
+    product_english_name: { 
         type: String 
     },
     version_id: {
@@ -19,7 +22,11 @@ var cartItemSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    model_name: {
+    model_arabic_name: {
+        type: String, 
+        required: true
+    },
+    model_english_name: {
         type: String, 
         required: true
     },
@@ -27,7 +34,11 @@ var cartItemSchema = new mongoose.Schema({
             type: String,
             required: true,
     },
-    service_name:{
+    service_arabic_name:{
+        type:String,
+        required: true
+    },
+    service_english_name:{
         type:String,
         required: true
     },
@@ -35,7 +46,10 @@ var cartItemSchema = new mongoose.Schema({
         type: Number, 
         required: true
         },
-    service_type: {
+    service_arabic_type: {
+        type:String ,
+    },
+    service_english_type: {
         type:String ,
     },
     quantity: {
@@ -51,7 +65,10 @@ var saveProductSchema = new mongoose.Schema({
             type: String, 
             ref: "Products" 
         },
-        product_name: { 
+        product_arabic_name: { 
+            type: String 
+        },
+        product_english_name: { 
             type: String 
         },
         version_id: { 
@@ -61,7 +78,11 @@ var saveProductSchema = new mongoose.Schema({
             type:String,
             required: true,
         },
-        model_name: {
+        model_arabic_name: {
+            type: String, 
+            required: true
+        },
+        model_english_name: {
             type: String, 
             required: true
         },
@@ -69,7 +90,11 @@ var saveProductSchema = new mongoose.Schema({
                 type: String,
                 required: true,
         },
-        service_name:{
+        service_arabic_name:{
+            type:String,
+            required: true
+        },
+        service_english_name:{
             type:String,
             required: true
         },
@@ -77,7 +102,10 @@ var saveProductSchema = new mongoose.Schema({
             type: Number, 
             required: true
             },
-        service_type: {
+        service_arabic_type: {
+            type:String ,
+        },
+        service_english_type: {
             type:String ,
         },
         quantity: {
@@ -135,10 +163,7 @@ var userSchema = new mongoose.Schema({
         minlength: 8,
         validate(value) { 
         const StrongPassword = new RegExp("^(?=.*[a-z])(?=.*[0-9])");
-        if (!StrongPassword.test(value)) { throw new Error(" Password must contain ' ^(?=.*[a-z])(?=.*[0-9]) ' ") } } },
-    address: { 
-        type: String, 
-        required: true 
+        if (!StrongPassword.test(value)) { throw new Error(" Password must contain ' ^(?=.*[a-z])(?=.*[0-9]) ' ") } } 
     },
     tokens: [{ 
         type: String, 
