@@ -39,8 +39,11 @@ const add_main_product = async (req, res) => {
     let { arabic_main_category,english_main_category, english_supported_list,arabic_supported_list, arabic_comman_reapir,english_comman_reapir, icon } = req.body;
     const main_photo = req.files?.find(f => f.fieldname === 'main_photo');
 
-    if (typeof supported_list === 'string') supported_list = JSON.parse(supported_list);
-    if (typeof comman_reapir === 'string') comman_reapir = JSON.parse(comman_reapir);
+    if (typeof english_supported_list === 'string') english_supported_list = JSON.parse(english_supported_list);
+    if (typeof arabic_supported_list === 'string') arabic_supported_list = JSON.parse(arabic_supported_list);
+    if (typeof arabic_comman_reapir === 'string') arabic_comman_reapir = JSON.parse(arabic_comman_reapir);
+    if (typeof english_comman_reapir === 'string') english_comman_reapir = JSON.parse(english_comman_reapir);
+    
 
    
    const existdata = await Products.findOne({ arabic_main_category:english_main_category,english_main_category:english_main_category });
