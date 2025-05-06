@@ -34,7 +34,7 @@ const admin_Register = async (req, res) => {
 
 
 /////////////////////////////////////////////
-cconst add_main_product = async (req, res) => {
+const add_main_product = async (req, res) => {
   try {
     console.log("Language:", req.language);  // تحقق من أن اللغة مضبوطة بشكل صحيح
     let { arabic_main_category, english_main_category, english_supported_list, arabic_supported_list, arabic_comman_reapir, english_comman_reapir, icon } = req.body;
