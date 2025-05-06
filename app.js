@@ -21,6 +21,10 @@ const admin = require('./routers/admin_router')
 const {Login, logout , checkAuth} = require('./routers/login_router')
 const payment = require('./routers/payment_router')
 const book_appointment = require('./routers/book_appointment_router')
+const { setLanguage } = require('./middleware/setLanguage');
+
+
+
 
 const app = express();
 
@@ -55,6 +59,7 @@ app.use(cookieParser());
  app.use(express_mongo_sanitize())
  app.use(xss())
 
+app.use(setLanguage);
 
 app.use('/app/user',user);
 app.use('/app/secure_admin',admin);
