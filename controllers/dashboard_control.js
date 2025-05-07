@@ -239,29 +239,43 @@ const edit_model_and_service_in_version = async (req, res) => {
 
 const get_all_supported_comman_reapir_devices = async (req, res) => {
   try {
-    const products = await Products.find({}, 'product_id arabic_main_category english_main_category main_photo arabic_supported_list english_supported_list arabic_comman_reapir english_comman_reapir icon');
-    
-    if (req.language === 'ar') {
-      res.status(200).json({
-        message: 'تم جلب الأجهزة المدعومة لإصلاح الأعطال بنجاح',
-        products,
-      });
-    } else {
-      res.status(200).json({
-        message: 'Successfully retrieved supported common repair devices',
-        products,
-      });
-    }
+    const products = await Products.find({}, 
+      'product_id arabic_main_category english_main_category main_photo arabic_supported_list english_supported_list arabic_comman_reapir english_comman_reapir icon'
+    );
+
+    const language = req.language || 'en';
+
+    const formattedProducts = products.map(product => {
+      return {
+        product_id: product.product_id,
+        main_category: language === 'ar' ? product.arabic_main_category : product.english_main_category,
+        main_photo: product.main_photo,
+        supported_list: language === 'ar' ? product.arabic_supported_list : product.english_supported_list,
+        comman_reapir: language === 'ar' ? product.arabic_comman_reapir : product.english_comman_reapir,
+        icon: product.icon
+      };
+    });
+
+    const message = language === 'ar'
+      ? 'تم جلب الأجهزة المدعومة لإصلاح الأعطال بنجاح'
+      : 'Successfully retrieved supported common repair devices';
+
+    res.status(200).json({ message, products: formattedProducts });
+
   } catch (e) {
-    res.status(500).send(req.language === 'ar' ? 'حدث خطأ أثناء استرجاع البيانات' : 'An error occurred while retrieving the data');
+    const errorMessage = req.language === 'ar'
+      ? 'حدث خطأ أثناء استرجاع البيانات'
+      : 'An error occurred while retrieving the data';
+    res.status(500).send(errorMessage);
   }
 };
+
 
 
 const get_all_versions_in_product = async (req, res) => {
   try {
     const { product_id } = req.params;
-    const language = req.language || 'en'; // default to English if not provided
+    const language = req.language || 'en'; 
 
     const product = await Products.findOne({ product_id }, 'versions');
     if (!product) {
