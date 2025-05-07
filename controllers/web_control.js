@@ -274,7 +274,7 @@ const save_product = async (req, res) => {
     if (!user) return res.status(400).send(req.language === 'ar' ? "يرجى تسجيل الدخول أو التسجيل!" : "Please login or signup!!");
 
     const { product_id, version_id, model_id, service_id } = req.params;
-    const { selected_service_type } = req.body; 
+    const { service_arabic_type, service_english_type } = req.body;
     const language = req.language || 'en'; 
 
     const userData = await User.findById(user._id);
@@ -292,17 +292,15 @@ const save_product = async (req, res) => {
     const service = model.product_service.find(s => s.service_id.toString() === service_id);
     if (!service) return res.status(404).send({ message: language === 'ar' ? 'الخدمة غير موجودة لهذا الموديل!' : 'Service not found for this model!' });
 
-    const serviceType = service.service_type.find(
-      st => st.arabic_name === selected_service_type || st.english_name === selected_service_type
-    );
+    
 
     if (!serviceType) return res.status(400).send({ message: language === 'ar' ? "نوع الخدمة غير موجود!" : "Service type not found!" });
 
    
     const alreadySaved = userData.my_save_products.some(item =>
       item.model_id.toString() === model_id &&
-      item.service_id.toString() === service_id &&
-      (item.service_arabic_type === serviceType.arabic_name || item.service_english_type === serviceType.english_name)
+      item.service_id.toString() === service_id 
+
     );
 
     if (alreadySaved) {
@@ -320,8 +318,8 @@ const save_product = async (req, res) => {
       service_id: service.service_id,
       service_arabic_name: service.service_arabic_name,
       service_english_name: service.service_english_name,
-      service_arabic_type: serviceType.arabic_name,
-      service_english_type: serviceType.english_name,
+      service_arabic_type: service_arabic_type,
+      service_english_type:service_english_type,
       service_price: serviceType.price,
       quantity: 1
     });
@@ -418,7 +416,7 @@ const addToCart = async (req, res) => {
     if (!user) return res.status(400).send(req.language === 'ar' ? "من فضلك قم بتسجيل الدخول أو التسجيل!" : "Please login or signup!!");
 
     const { product_id, version_id, model_id, service_id } = req.params;
-    const { arabic_service_type, english_service_type, service_price } = req.body;
+    const { service_arabic_type, service_english_type, service_price } = req.body;
 
     const product = await Products.findOne({ product_id });
     if (!product) return res.status(404).send({ message: req.language === 'ar' ? 'المنتج غير موجود!' : 'Product not found!' });
@@ -446,8 +444,8 @@ const addToCart = async (req, res) => {
       model_name: req.language === 'ar' ? model.arabic_name : model.english_name,
       service_id: service.service_id,
       service_name: req.language === 'ar' ? service.service_arabic_name : service.service_english_name,
-      service_arabic_type: req.language === 'ar' ? arabic_service_type : null,
-      service_english_type: req.language === 'en' ? english_service_type : null,
+      service_arabic_type: req.language === 'ar' ? service_arabic_type : null,
+      service_english_type: req.language === 'en' ? service_english_type : null,
       service_price: service_price,
       quantity: 1
     });
