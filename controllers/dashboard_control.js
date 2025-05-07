@@ -366,17 +366,21 @@ const get_all_services_in_model = async (req, res) => {
 
     const services = model.product_service.map(s => ({
       service_id: s.service_id,
-      name: language === 'ar' ? s.arabic_name : s.english_name,
-      description: language === 'ar' ? s.arabic_description : s.english_description,
-      price: s.price,
-      duration: s.duration,
+      name: language === 'ar' ? s.service_arabic_name : s.service_english_name,
+      description: s.service_description,
+      service_type: s.service_type.map(type => ({
+        name: language === 'ar' ? type.arabic_name : type.english_name,
+        price: type.price
+      })),
+      service_rate: s.service_rate,
     }));
 
     res.status(200).json(services);
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(500).send(language === 'ar' ? 'حدث خطأ في الخادم' : 'Server error');
   }
 };
+
 
 
 const delete_product = async (req, res) => {
