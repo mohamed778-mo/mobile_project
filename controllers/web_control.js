@@ -443,8 +443,8 @@ const addToCart = async (req, res) => {
       service_id: service.service_id,
       service_arabic_name: service.service_arabic_name,
       service_english_name:service.service_english_name,
-      service_arabic_type: req.language === 'ar' ? service_arabic_type : null,
-      service_english_type: req.language === 'en' ? service_english_type : null,
+      service_arabic_type:  service_arabic_type ,
+      service_english_type: service_english_type ,
       service_price: service_price,
       quantity: 1
     });
