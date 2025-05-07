@@ -1,5 +1,5 @@
 const setLanguage = (req, res, next) => {
-    req.language = req.headers['Accept-Language'] || 'en';
+    req.language = req.headers['accept-language'] || 'en';
     next();
   };
   
