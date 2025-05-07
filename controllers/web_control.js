@@ -434,12 +434,15 @@ const addToCart = async (req, res) => {
 
     user.cart.push({
       product_id: product_id,
-      product_name: req.language === 'ar' ? product.arabic_main_category : product.english_main_category,
+      product_arabic_name: product.arabic_main_category ,
+      product_english_name: product.english_main_category,
       version_id: version.version_id,
       model_id: model.model_id,
-      model_name: req.language === 'ar' ? model.arabic_name : model.english_name,
+      model_arabic_name:model.arabic_name ,
+      model_english_name: model.english_name,
       service_id: service.service_id,
-      service_name: req.language === 'ar' ? service.service_arabic_name : service.service_english_name,
+      service_arabic_name: service.service_arabic_name,
+      service_english_name:service.service_english_name,
       service_arabic_type: req.language === 'ar' ? service_arabic_type : null,
       service_english_type: req.language === 'en' ? service_english_type : null,
       service_price: service_price,
@@ -468,13 +471,14 @@ const viewCart = async (req, res) => {
       totalCartPrice += lineTotal;
       return {
         product_id: item.product_id,
-        product_name: req.language === 'ar' ? item.product_name : item.product_name,  // Already in Arabic/English
+        product_name: req.language === 'ar' ? item.arabic_main_category : item.english_main_category,  
         version_id: item.version_id,
         model_id: item.model_id,
         model_name: req.language === 'ar' ? item.model_arabic_name : item.model_english_name,
         service_id: item.service_id,
         service_name: req.language === 'ar' ? item.service_arabic_name : item.service_english_name,
-        service_type: req.language === 'ar' ? item.service_arabic_type : item.service_english_type,
+        service_arabic_type:  item.service_arabic_type ,
+        service_english_type: item.service_english_type,
         service_price: item.service_price,
         quantity: item.quantity,
         total_price: lineTotal
