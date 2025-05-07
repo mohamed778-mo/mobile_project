@@ -293,10 +293,6 @@ const save_product = async (req, res) => {
     if (!service) return res.status(404).send({ message: language === 'ar' ? 'الخدمة غير موجودة لهذا الموديل!' : 'Service not found for this model!' });
 
     
-
-    if (!serviceType) return res.status(400).send({ message: language === 'ar' ? "نوع الخدمة غير موجود!" : "Service type not found!" });
-
-   
     const alreadySaved = userData.my_save_products.some(item =>
       item.model_id.toString() === model_id &&
       item.service_id.toString() === service_id 
