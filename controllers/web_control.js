@@ -477,8 +477,7 @@ const viewCart = async (req, res) => {
         model_name: req.language === 'ar' ? item.model_arabic_name : item.model_english_name,
         service_id: item.service_id,
         service_name: req.language === 'ar' ? item.service_arabic_name : item.service_english_name,
-        service_arabic_type:  item.service_arabic_type ,
-        service_english_type: item.service_english_type,
+        service_type:  req.language === 'ar' ?  item.service_arabic_type :item.service_english_type,
         service_price: item.service_price,
         quantity: item.quantity,
         total_price: lineTotal
