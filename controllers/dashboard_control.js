@@ -36,7 +36,7 @@ const admin_Register = async (req, res) => {
 /////////////////////////////////////////////
 const add_main_product = async (req, res) => {
   try {
-    console.log("Language:", req.language);  // تحقق من أن اللغة مضبوطة بشكل صحيح
+    
     let { arabic_main_category, english_main_category, english_supported_list, arabic_supported_list, arabic_comman_reapir, english_comman_reapir, icon } = req.body;
     const main_photo = req.files?.find(f => f.fieldname === 'main_photo');
 
@@ -243,106 +243,115 @@ const get_all_supported_comman_reapir_devices = async (req, res) => {
       'product_id arabic_main_category english_main_category main_photo arabic_supported_list english_supported_list arabic_comman_reapir english_comman_reapir icon'
     );
 
-    const language = req.language || 'en';
+    const formattedProducts = products.map(product => ({
+      product_id: product.product_id,
+      main_category: {
+        ar: product.arabic_main_category,
+        en: product.english_main_category,
+      },
+      main_photo: product.main_photo,
+      supported_list: {
+        ar: product.arabic_supported_list,
+        en: product.english_supported_list,
+      },
+      comman_reapir: {
+        ar: product.arabic_comman_reapir,
+        en: product.english_comman_reapir,
+      },
+      icon: product.icon
+    }));
 
-    const formattedProducts = products.map(product => {
-      return {
-        product_id: product.product_id,
-        main_category: language === 'ar' ? product.arabic_main_category : product.english_main_category,
-        main_photo: product.main_photo,
-        supported_list: language === 'ar' ? product.arabic_supported_list : product.english_supported_list,
-        comman_reapir: language === 'ar' ? product.arabic_comman_reapir : product.english_comman_reapir,
-        icon: product.icon
-      };
+    res.status(200).json({
+      message: 'Successfully retrieved supported common repair devices',
+      products: formattedProducts
     });
 
-    const message = language === 'ar'
-      ? 'تم جلب الأجهزة المدعومة لإصلاح الأعطال بنجاح'
-      : 'Successfully retrieved supported common repair devices';
-
-    res.status(200).json({ message, products: formattedProducts });
-
   } catch (e) {
-    const errorMessage = req.language === 'ar'
-      ? 'حدث خطأ أثناء استرجاع البيانات'
-      : 'An error occurred while retrieving the data';
-    res.status(500).send(errorMessage);
+   res.status(500).json({ message: error.message });
   }
 };
+
 
 
 
 const get_all_versions_in_product = async (req, res) => {
   try {
     const { product_id } = req.params;
-    const language = req.language || 'en'; 
 
     const product = await Products.findOne({ product_id }, 'versions');
     if (!product) {
-      return res.status(404).send(
-        language === 'ar' ? 'المنتج غير موجود' : 'Product not found'
-      );
+     return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found');
     }
 
     const versions = product.versions.map(v => ({
       version_id: v.version_id,
-      version_name:
-        language === 'ar' ? v.version_arabic_name : v.version_english_name,
+      version_name: {
+        ar: v.version_arabic_name,
+        en: v.version_english_name
+      }
     }));
 
     res.status(200).json(versions);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 
 const get_all_models_in_version = async (req, res) => {
   try {
     const { product_id, version_id } = req.params;
-    const language = req.language || 'en';
 
     const product = await Products.findOne({ product_id });
-    if (!product)
-      return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found');
+    if (!product){
+    return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found')
+    }
 
     const version = product.versions.find(v => v.version_id.toString() === version_id);
-    if (!version)
-      return res.status(404).send(language === 'ar' ? 'النسخة غير موجودة' : 'Version not found');
+    if (!version) return res.status(404).send(language === 'ar' ? 'الاصدار غير موجود' : 'Version not found');
 
     const models = version.model.map(m => ({
       model_id: m.model_id,
-      name: language === 'ar' ? m.arabic_name : m.english_name,
+      name: {
+        ar: m.arabic_name,
+        en: m.english_name
+      }
     }));
 
     res.status(200).json(models);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 
 const get_all_versions_and_models_in_product = async (req, res) => {
   try {
     const { product_id } = req.params;
-    const language = req.language || 'en';
 
     const product = await Products.findOne({ product_id }, 'versions');
-    if (!product)
-      return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found');
+    if (!product) return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found');
 
     const versions = product.versions.map(v => ({
       version_id: v.version_id,
-      version_name: language === 'ar' ? v.version_arabic_name : v.version_english_name,
+      version_name: {
+        ar: v.version_arabic_name,
+        en: v.version_english_name
+      },
       model: v.model.map(m => ({
         model_id: m.model_id,
-        name: language === 'ar' ? m.arabic_name : m.english_name,
-      })),
+        name: {
+          ar: m.arabic_name,
+          en: m.english_name
+        }
+      }))
     }));
 
     res.status(200).json(versions);
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(500).json({ message: e.message });
   }
 };
 
@@ -350,37 +359,38 @@ const get_all_versions_and_models_in_product = async (req, res) => {
 const get_all_services_in_model = async (req, res) => {
   try {
     const { product_id, version_id, model_id } = req.params;
-    const language = req.language || 'en';
 
     const product = await Products.findOne({ product_id });
-    if (!product)
-      return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found');
+    if (!product) return res.status(404).send(language === 'ar' ? 'المنتج غير موجود' : 'Product not found');
 
     const version = product.versions.find(v => v.version_id.toString() === version_id);
-    if (!version)
-      return res.status(404).send(language === 'ar' ? 'النسخة غير موجودة' : 'Version not found');
+    if (!version) return res.status(404).send(language === 'ar' ? 'الاصدار غير موجود' : 'Version not found');
 
     const model = version.model.find(m => m.model_id.toString() === model_id);
-    if (!model)
-      return res.status(404).send(language === 'ar' ? 'الموديل غير موجود' : 'Model not found');
+    if (!model) return res.status(404).send(language === 'ar' ? 'الموديل غير موجود' : 'Model not found');
 
     const services = model.product_service.map(s => ({
       service_id: s.service_id,
-      name: language === 'ar' ? s.service_arabic_name : s.service_english_name,
+      name: {
+        ar: s.service_arabic_name,
+        en: s.service_english_name
+      },
       description: s.service_description,
-      service_type: s.service_type.map(type => ({
-        name: language === 'ar' ? type.arabic_name : type.english_name,
-        price: type.price
-      })),
       service_rate: s.service_rate,
+      service_type: s.service_type.map(type => ({
+        name: {
+          ar: type.arabic_name,
+          en: type.english_name
+        },
+        price: type.price
+      }))
     }));
 
     res.status(200).json(services);
   } catch (e) {
-    res.status(500).send(language === 'ar' ? 'حدث خطأ في الخادم' : 'Server error');
+  res.status(500).json({ message: error.message });
   }
 };
-
 
 
 const delete_product = async (req, res) => {
