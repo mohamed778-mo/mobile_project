@@ -245,10 +245,8 @@ const get_all_supported_comman_reapir_devices = async (req, res) => {
 
     const formattedProducts = products.map(product => ({
       product_id: product.product_id,
-      main_category: {
-        ar: product.arabic_main_category,
-        en: product.english_main_category,
-      },
+      arabic_main_category: product.arabic_main_category,
+      english_main_category: product.english_main_category,
       main_photo: product.main_photo,
       supported_list: {
         ar: product.arabic_supported_list,
@@ -313,10 +311,12 @@ const get_all_models_in_version = async (req, res) => {
 
     const models = version.model.map(m => ({
       model_id: m.model_id,
-      name: {
-        ar: m.arabic_name,
-        en: m.english_name
-      }
+      // name: {
+      //   ar: m.arabic_name,
+      //   en: m.english_name
+      // }
+      arabic_name : m.arabic_name,
+      english_name : m.english_name
     }));
 
     res.status(200).json(models);
@@ -336,16 +336,20 @@ const get_all_versions_and_models_in_product = async (req, res) => {
 
     const versions = product.versions.map(v => ({
       version_id: v.version_id,
-      version_name: {
-        ar: v.version_arabic_name,
-        en: v.version_english_name
-      },
+      // version_name: {
+      //   ar: v.version_arabic_name,
+      //   en: v.version_english_name
+      // },
+      version_english_name: v.version_english_name,
+      version_arabic_name: v.version_arabic_name,
       model: v.model.map(m => ({
         model_id: m.model_id,
-        name: {
-          ar: m.arabic_name,
-          en: m.english_name
-        }
+        arabic_name : m.arabic_name,
+        english_name : m.english_name
+        // name: {
+        //   ar: m.arabic_name,
+        //   en: m.english_name
+        // }
       }))
     }));
 
@@ -371,17 +375,21 @@ const get_all_services_in_model = async (req, res) => {
 
     const services = model.product_service.map(s => ({
       service_id: s.service_id,
-      name: {
-        ar: s.service_arabic_name,
-        en: s.service_english_name
-      },
+      // name: {
+      //   ar: s.service_arabic_name,
+      //   en: s.service_english_name
+      // },
+      service_arabic_name : s.service_arabic_name,
+      service_english_name : s.service_english_name,
       description: s.service_description,
       service_rate: s.service_rate,
       service_type: s.service_type.map(type => ({
-        name: {
-          ar: type.arabic_name,
-          en: type.english_name
-        },
+        arabic_name : type.arabic_name,
+        english_name : type.english_name ,
+        // name: {
+        //   ar: type.arabic_name,
+        //   en: type.english_name
+        // },
         price: type.price
       }))
     }));
