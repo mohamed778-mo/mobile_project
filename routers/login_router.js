@@ -38,15 +38,15 @@ const Login = async (req, res) => {
 
     res.cookie("access_token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     });
     res.cookie("userType", userType, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     });
