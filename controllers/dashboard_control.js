@@ -221,7 +221,7 @@ const edit_model_and_service_in_version = async (req, res) => {
     if (!service) return res.status(404).send(req.language === 'ar' ? 'الخدمة غير موجودة' : 'Service not found');
 
     if (model_arabic_name) model.arabic_name = model_arabic_name;
-    if (model_english_name) model.english_name = model_english_name;
+    if (model_english_name) model.english_name = model_english_name; 
     if (service_arabic_name) service.service_arabic_name = service_arabic_name;
     if (service_english_name) service.service_english_name = service_english_name;
     if (service_description) service.service_description = service_description;
