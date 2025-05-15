@@ -18,7 +18,7 @@ router.post('/create-payment',auth, async (req, res) => {
     
         const user = req.user;
 
-    
+    console.log(user)
         const user_data = await User.findById(user._id);
         if (!user_data) {
             return res.status(400).send('User not found');
