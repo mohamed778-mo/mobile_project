@@ -18,61 +18,47 @@ const Login = async (req, res) => {
     }
 
     if (!user) {
-      const message = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
-      return res.status(404).send({ message });
+      return res.status(404).send({ message: "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
     }
 
     if (!user.verfied) {
-      const message = "يرجى التحقق من البريد الإلكتروني";
-      return res.status(403).send({ message });
+      return res.status(403).send({ message: "يرجى التحقق من البريد الإلكتروني" });
     }
 
     const isPassword = await bcryptjs.compare(password, user.password);
     if (!isPassword) {
-      const message = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
-      return res.status(404).send({ message });
+      return res.status(404).send({ message: "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
     }
 
     const SECRETKEY = process.env.SECRETKEY;
     const token = jwt.sign({ id: user._id, type: userType }, SECRETKEY);
 
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      path: "/",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-    });
-    res.cookie("userType", userType, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      path: "/",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-    });
-    console.log("Set cookie with token:", token);
 
-    //     res.cookie("access_token", `Bearer ${token}`, {
-    //   httpOnly: true,
-    //   secure: false, // مؤقتًا للتجريب على localhost
-    //   sameSite: "Lax", // أو "None" مع secure: true
-    //   path: "/",
-    //   maxAge: 7 * 24 * 60 * 60 * 1000,
-    // });
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // أسبوع
+    };
+
+    res.cookie("access_token", token, cookieOptions);
+    res.cookie("userType", userType, cookieOptions);
+    console.log("Set cookie with token:", token);
 
     user.tokens.push(token);
     await user.save();
 
-    const message = "تم تسجيل الدخول بنجاح!";
-    res.status(200).send({ success: message, type: userType });
+    res.status(200).send({ success: "تم تسجيل الدخول بنجاح!", type: userType });
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).send({ message: error.message });
   }
 };
 
+
 const logout = async (req, res) => {
   try {
-    const token = req.cookies.access_token; // قراءة التوكن مباشرة من الكوكيز
+    const token = req.cookies.access_token;
 
     if (!token) {
       return res.status(401).json({ message: "لا يوجد توكن." });
@@ -91,20 +77,26 @@ const logout = async (req, res) => {
       await user.save();
     }
 
-    res.clearCookie("access_token"); // مسح الكوكيز بعد تسجيل الخروج
-    res.clearCookie("userType");
+ 
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    };
+
+    res.clearCookie("access_token", cookieOptions);
+    res.clearCookie("userType", cookieOptions);
 
     res.status(200).json({ message: "تم تسجيل الخروج بنجاح!" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "حدث خطأ أثناء تسجيل الخروج", error: err.message });
+    res.status(500).json({ message: "حدث خطأ أثناء تسجيل الخروج", error: err.message });
   }
 };
 
 const checkAuth = async (req, res) => {
   try {
-    const token = req.cookies.access_token; // هنا قمت بقراءة التوكن بدون "Bearer"
+    const token = req.cookies.access_token;
 
     if (!token) {
       return res.status(401).json({ authenticated: false });
@@ -138,3 +130,4 @@ const checkAuth = async (req, res) => {
 };
 
 module.exports = { Login, logout, checkAuth };
+
