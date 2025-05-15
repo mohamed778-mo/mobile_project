@@ -31,7 +31,7 @@ app.use(setLanguage);
 app.use(compression()); 
 app.use(cors({
   
-    origin: ['http://localhost:3000' , "https://mobile-project-xi.vercel.app"],
+    origin: ['http://localhost:3000' , "https://icmobile.netlify.app" , "https://icmobile.vercel.app"],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true 
