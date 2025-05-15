@@ -39,11 +39,13 @@ const Login = async (req, res) => {
     res.cookie("access_token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: "None",
       path: "/",
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      maxAge: 7 * 24 * 60 * 60 * 1000, // أسبوع
     });
+
     res.cookie("userType", userType, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -67,13 +69,12 @@ const Login = async (req, res) => {
     res.status(200).send({ success: message, type: userType });
   } catch (error) {
     res.status(500).send(error.message);
-  }
+  }
 };
-
 
 const logout = async (req, res) => {
   try {
-    const token = req.cookies.access_token; 
+    const token = req.cookies.access_token;
 
     if (!token) {
       return res.status(401).json({ message: "لا يوجد توكن." });
@@ -92,15 +93,15 @@ const logout = async (req, res) => {
       await user.save();
     }
 
-    res.clearCookie("access_token"); 
+    res.clearCookie("access_token");
     res.clearCookie("userType");
 
     res.status(200).json({ message: "تم تسجيل الخروج بنجاح!" });
   } catch (err) {
     res
       .status(500)
-      .json({ message: "حدث خطأ أثناء تسجيل الخروج", error: err.message });
-  }
+      .json({ message: "حدث خطأ أثناء تسجيل الخروج", error: err.message });
+  }
 };
 
 const checkAuth = async (req, res) => {
@@ -139,4 +140,3 @@ const checkAuth = async (req, res) => {
 };
 
 module.exports = { Login, logout, checkAuth };
-
