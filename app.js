@@ -28,7 +28,7 @@ app.use(setLanguage);
 app.use(compression());
 app.use(
   cors({
-    origin: "*",
+  origin: "https://icmobile.vercel.app", 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
