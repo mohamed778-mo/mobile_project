@@ -30,12 +30,13 @@ const app = express();
 app.use(setLanguage); 
 app.use(compression()); 
 app.use(cors({
-  
-    origin: ['http://localhost:3000' , "https://icmobile.netlify.app" , "https://icmobile.netlify.app"],
+    origin: "https://icmobile.netlify.app", 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true 
+    exposedHeaders: ['Set-Cookie'],
 }));
+
 
 app.use(helmet());
 
