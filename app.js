@@ -26,21 +26,20 @@ const { setLanguage } = require('./middleware/setLanguage');
 
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(setLanguage); 
 app.use(compression()); 
 app.use(cors({
-    origin: ["https://icmobile.netlify.app","http://localhost:3000","https://icmobile.vercel.app"], 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Set-Cookie'],
+  origin: ["https://icmobile.netlify.app", "http://localhost:3000", "https://icmobile.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true
 }));
+
 
 
 app.use(helmet());
 
-app.set('trust proxy', 1);
 
 const LIMIT = '1000kb'; //500//
 app.use(bodyParser.json({ limit: LIMIT, extended: true }));
