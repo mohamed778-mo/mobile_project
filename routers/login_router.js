@@ -75,32 +75,20 @@ const Login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     const token = req.cookies.access_token;
+    if (!token) return res.status(401).json({ message: "لا يوجد توكن." });
 
-    if (!token) {
-      return res.status(401).json({ message: "لا يوجد توكن." });
-    }
-
-    let user = await User.findOne({ tokens: token });
-    let userType = "user";
-
-    if (!user) {
-      user = await Admin.findOne({ tokens: token });
-      userType = "admin";
-    }
-
+    let user = await User.findOne({ tokens: token }) || await Admin.findOne({ tokens: token });
     if (user) {
       user.tokens = user.tokens.filter((t) => t !== token);
       await user.save();
     }
 
-    res.clearCookie("access_token");
-    res.clearCookie("userType");
+    res.clearCookie("access_token", { path: "/" });
+    res.clearCookie("userType", { path: "/" });
 
     res.status(200).json({ message: "تم تسجيل الخروج بنجاح!" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "حدث خطأ أثناء تسجيل الخروج", error: err.message });
+    res.status(500).json({ message: "حدث خطأ أثناء تسجيل الخروج", error: err.message });
   }
 };
 
