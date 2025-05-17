@@ -66,7 +66,7 @@ const Login = async (req, res) => {
     await user.save();
 
     const message = "تم تسجيل الدخول بنجاح!";
-    res.status(200).send({ success: message, type: userType });
+    res.status(200).send({ success: message, type: userType ,access_token:token });
   } catch (error) {
     res.status(500).send(error.message);
   }
