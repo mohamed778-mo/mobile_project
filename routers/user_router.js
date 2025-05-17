@@ -138,7 +138,7 @@ res.send(`
     <body>
       <div class="container">
         <h1>Reset your password</h1>
-        <form action="/app/user/resetpassword/${token}" method="POST">
+        <form action="/app/user/website/resetpassword/${token}" method="POST">
           <label for="password">New Password:</label>
           <input type="password" name="password" id="password" required />
           <button type="submit">Reset Password</button>
